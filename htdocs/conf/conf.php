@@ -7,7 +7,9 @@
 //
 $dolibarr_main_url_root='http://localhost/dolibarr2003edit/htdocs';
 $dolibarr_main_document_root="C:/wamp64/www/dolibarr2003edit/htdocs";
+
 $dolibarr_main_url_root_alt='/custom';
+
 $dolibarr_main_document_root_alt="C:/wamp64/www/dolibarr2003edit/htdocs/custom";
 $dolibarr_main_data_root="C:/wamp64/www/dolibarr2003edit/documents";
 $dolibarr_main_db_host='localhost';

@@ -73,6 +73,8 @@ if (!empty($cancel)) {
 
 // Action to add record
 if ($action == 'add' && !empty($permissiontoadd)) {
+
+	//var_dump($object);
 	foreach ($object->fields as $key => $val) {
 		// Ignore special cases
 		if ($object->fields[$key]['type'] == 'duration') {
@@ -189,6 +191,11 @@ if ($action == 'add' && !empty($permissiontoadd)) {
 			$error++;
 		}
 	}
+
+	// if($object->element =='bonretour')
+	// {
+	// 	echo ;exit;
+	// }
 
 	if (!$error) {
 		$db->begin();
