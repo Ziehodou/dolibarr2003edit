@@ -1,0 +1,42 @@
+# Translation file
+
+#
+# Generic
+#
+
+# Module label 'ModuleBonretourName'
+ModuleBonretourName = Bonretour
+# Module description 'ModuleBonretourDesc'
+ModuleBonretourDesc = Bonretour description
+
+#
+# Admin page
+#
+BonretourSetup = Bonretour setup
+Settings = Settings
+BonretourSetupPage = Bonretour setup page
+NewSection=New section
+BONRETOUR_MYPARAM1 = My param 1
+BONRETOUR_MYPARAM1Tooltip = My param 1 tooltip
+BONRETOUR_MYPARAM2=My param 2
+BONRETOUR_MYPARAM2Tooltip=My param 2 tooltip
+
+
+#
+# About page
+#
+About = About
+BonretourAbout = About Bonretour
+BonretourAboutPage = Bonretour about page
+
+#
+# Sample page
+#
+BonretourArea = Home Bonretour
+MyPageName = My page name
+
+#
+# Sample widget
+#
+MyWidget = My widget
+MyWidgetDescription = My widget description

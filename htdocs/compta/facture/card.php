@@ -5823,6 +5823,7 @@ if ($action == 'create') {
 					}
 				}
 			}
+			print '<a class="butAction" href="' . DOL_URL_ROOT . '/custom/bonretour/bonretour_card.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans('Créer bon de retour') . '</a>';
 
 			// Validate
 			if ($object->status == Facture::STATUS_DRAFT && count($object->lines) > 0 && ((($object->type == Facture::TYPE_STANDARD || $object->type == Facture::TYPE_REPLACEMENT || $object->type == Facture::TYPE_DEPOSIT || $object->type == Facture::TYPE_PROFORMA || $object->type == Facture::TYPE_SITUATION) && (getDolGlobalString('FACTURE_ENABLE_NEGATIVE') || $object->total_ttc >= 0)) || ($object->type == Facture::TYPE_CREDIT_NOTE && $object->total_ttc <= 0))) {
@@ -5831,6 +5832,7 @@ if ($action == 'create') {
 					print dolGetButtonAction($langs->trans('Validate'), '', 'default', $_SERVER["PHP_SELF"].'?facid='.$object->id.'&action=valid&token='.newToken(), '', true, $params);
 				}
 			}
+			
 
 			// Send by mail
 			if (empty($user->socid)) {
