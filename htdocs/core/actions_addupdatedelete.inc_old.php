@@ -73,6 +73,8 @@ if (!empty($cancel)) {
 
 // Action to add record
 if ($action == 'add' && !empty($permissiontoadd)) {
+	//echo $action;exit();
+	//var_dump($object);
 	foreach ($object->fields as $key => $val) {
 		// Ignore special cases
 		if ($object->fields[$key]['type'] == 'duration') {
@@ -189,45 +191,16 @@ if ($action == 'add' && !empty($permissiontoadd)) {
 			$error++;
 		}
 	}
+
+	// if($object->element =='bonretour')
+	// {
+	// 	echo ;exit;
+	// }
+
 	if (!$error) {
 		$db->begin();
 
 		$result = $object->create($user);
-		if($object->element =='bonretour')
-		{
-			$sqlol ="insert into ".MAIN_DB_PREFIX."element_element (fk_source , sourcetype , fk_target , targettype) values (" ; 
-			$sqlol .="'".GETPOST('originid')."' ,'facture' , '".$result."' , 'bonretour')" ;
-			$resqlol = $db->query($sqlol) ; 
-			if($resqlol)
-			{
-				$db->commit();
-			}
-			// $sqlligne = "select * from ".MAIN_DB_PREFIX."facturedet where fk_facture = ".GETPOST('originid') ;
-			// $resqlligne = $db->query($sqlligne) ; 
-			// if($resqlligne)
-			// {
-				// $numligne = $db->num_rows($resqlligne);
-				// $n=0 ; 
-				// while($n < $numligne)
-				// {
-					// $objligne = $db->fetch_object($resqlligne); 
-					// $fk_product =$objligne->fk_product ;
-					// $qty =$objligne->qty ;
-					// $amount =$objligne->subprice ;
-					// $sqlinsert = "insert into ".MAIN_DB_PREFIX."bonretour_bonretourline (fk_user_creat,fk_bonretour,fk_product,qty,amount) values (" ; 
-					// $sqlinsert .="'".$user->id."' ,'".$result."' ,'".$fk_product."' ," ; 
-					// $sqlinsert .= " '".(($qty) !== '' ? ($qty) : "null")."'";
-					// $sqlinsert .= ", '".(($amount) !== '' ? ($amount) : "null")."')";
-					// $resqlinsert = $db->query($sqlinsert) ; 
-					// if($resqlinsert)
-					// {
-						// $db->commit();
-					// }
-					// $n++;
-				// }
-			
-			// }
-		}
 		if ($result > 0) {
 			// Creation OK
 			if (isModEnabled('category') && method_exists($object, 'setCategories')) {
@@ -534,77 +507,7 @@ if ($action == 'confirm_deleteline' && $confirm == 'yes' && !empty($permissionto
 	}
 	$action = '';
 }
-if ($action == 'confirm_approuver' && $confirm == 'yes' && $permissiontoadd) {
-	$result = $object->approuver($user);
-	if ($result >= 0) {
-		
-		// Define output language
-		if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) {
-			if (method_exists($object, 'generateDocument')) {
-				$outputlangs = $langs;
-				$newlang = '';
-				if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang) && GETPOST('lang_id', 'aZ09')) {
-					$newlang = GETPOST('lang_id', 'aZ09');
-				}
-				if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
-					$newlang = !empty($object->thirdparty->default_lang) ? $object->thirdparty->default_lang : "";
-				}
-				if (!empty($newlang)) {
-					$outputlangs = new Translate("", $conf);
-					$outputlangs->setDefaultLang($newlang);
-				}
 
-				$ret = $object->fetch($id); // Reload to get new records
-
-				$model = $object->model_pdf;
-
-				$retgen = $object->generateDocument($model, $outputlangs, $hidedetails, $hidedesc, $hideref);
-				if ($retgen < 0) {
-					setEventMessages($object->error, $object->errors, 'warnings');
-				}
-			}
-		}
-	} else {
-		$error++;
-		setEventMessages($object->error, $object->errors, 'errors');
-	}
-	$action = '';
-}if ($action == 'confirm_accepter' && $confirm == 'yes' && $permissiontoadd) {
-	$result = $object->accepter($user);
-	if ($result >= 0) {
-		
-		// Define output language
-		if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) {
-			if (method_exists($object, 'generateDocument')) {
-				$outputlangs = $langs;
-				$newlang = '';
-				if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang) && GETPOST('lang_id', 'aZ09')) {
-					$newlang = GETPOST('lang_id', 'aZ09');
-				}
-				if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
-					$newlang = !empty($object->thirdparty->default_lang) ? $object->thirdparty->default_lang : "";
-				}
-				if (!empty($newlang)) {
-					$outputlangs = new Translate("", $conf);
-					$outputlangs->setDefaultLang($newlang);
-				}
-
-				$ret = $object->fetch($id); // Reload to get new records
-
-				$model = $object->model_pdf;
-
-				$retgen = $object->generateDocument($model, $outputlangs, $hidedetails, $hidedesc, $hideref);
-				if ($retgen < 0) {
-					setEventMessages($object->error, $object->errors, 'warnings');
-				}
-			}
-		}
-	} else {
-		$error++;
-		setEventMessages($object->error, $object->errors, 'errors');
-	}
-	$action = '';
-}
 // Action validate object
 if ($action == 'confirm_validate' && $confirm == 'yes' && $permissiontoadd) {
 	if ($object->element == 'inventory' && !empty($include_sub_warehouse)) {
@@ -613,33 +516,7 @@ if ($action == 'confirm_validate' && $confirm == 'yes' && $permissiontoadd) {
 	} else {
 		$result = $object->validate($user);
 	}
-	if($object->element == 'bonretour')
-	{
-		// Incrémenter notre stock 
-		require_once DOL_DOCUMENT_ROOT . '/product/stock/class/mouvementstock.class.php';
-		$sqlligne = "select * from ".MAIN_DB_PREFIX."bonretour_bonretourline where fk_bonretour = ".$object->id ; 
-		$resqlligne = $db->query($sqlligne) ; 
-		if ($resqlligne) {
-			$cpt = $db->num_rows($resqlligne);
-			for ($i = 0; $i < $cpt; $i++) {
-				$obj = $db->fetch_object($resqlligne);
-				$qty =  $obj->qty;
-				$mouvS = new MouvementStock($db);
-				$mouvS->origin = 'Bon de retour';
-				$mouvS->setOrigin('bonretour',$object->id);
-				$labelmovement = "Validation du bon de retour ".$object->ref; 
-				$result = $mouvS->reception($user, $obj->fk_product, $object->entrepot, $qty, 0, $langs->trans($labelmovement));
-				// echo $result ; exit;
-				if ($result < 0) {
-					$error = $mouvS->error;
-					$errors = $mouvS->errors;
-					$error++;
-					break;
-				}
-				
-			}
-		}
-	}
+
 	if ($result >= 0) {
 		// Define output language
 		if (!getDolGlobalString('MAIN_DISABLE_PDF_AUTOUPDATE')) {
@@ -662,7 +539,6 @@ if ($action == 'confirm_validate' && $confirm == 'yes' && $permissiontoadd) {
 				$model = $object->model_pdf;
 
 				$retgen = $object->generateDocument($model, $outputlangs, $hidedetails, $hidedesc, $hideref);
-				// echo $retgen ;exit;
 				if ($retgen < 0) {
 					setEventMessages($object->error, $object->errors, 'warnings');
 				}
@@ -710,32 +586,6 @@ if ($action == 'confirm_close' && $confirm == 'yes' && $permissiontoadd) {
 // Action setdraft object
 if ($action == 'confirm_setdraft' && $confirm == 'yes' && $permissiontoadd) {
 	$result = $object->setDraft($user);
-	if($object->element == 'bonretour')
-	{
-		require_once DOL_DOCUMENT_ROOT . '/product/stock/class/mouvementstock.class.php';
-		$sqlligne = "select * from ".MAIN_DB_PREFIX."bonretour_bonretourline where fk_bonretour = ".$object->id ; 
-		$resqlligne = $db->query($sqlligne) ; 
-		if ($resqlligne) {
-			$cpt = $db->num_rows($resqlligne);
-			for ($i = 0; $i < $cpt; $i++) {
-				$obj = $db->fetch_object($resqlligne);
-				$qty =  $obj->qty;
-				$mouvS = new MouvementStock($db);
-				$mouvS->origin = 'Bon de retour';
-				$mouvS->setOrigin('bonretour',$object->id);
-				$labelmovement = "Réouverture du bon de retour ".$object->ref; 
-				$result = $mouvS->livraison($user, $obj->fk_product, $object->entrepot, $obj->qty, 0, $langs->trans($labelmovement));
-				// echo $result ; exit;
-				if ($result < 0) {
-					$error = $mouvS->error;
-					$errors = $mouvS->errors;
-					$error++;
-					break;
-				}
-				
-			}
-		}
-	}
 	if ($result >= 0) {
 		// Nothing else done
 	} else {
@@ -807,3 +657,4 @@ if ($action == 'confirm_clone' && $confirm == 'yes' && !empty($permissiontoadd))
 		}
 	}
 }
+
